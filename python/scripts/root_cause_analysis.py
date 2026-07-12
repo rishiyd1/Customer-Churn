@@ -17,9 +17,13 @@
 # =============================================================================
 
 import os
+import sys
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 import warnings
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.ticker as mticker
@@ -43,7 +47,7 @@ plt.rcParams.update({
     "grid.color"       : "#2a2a4a",
     "grid.linestyle"   : "--",
     "grid.alpha"       : 0.4,
-    "font.family"      : "DejaVu Sans",
+    "font.family"      : "sans-serif",
     "axes.titlesize"   : 12,
     "axes.labelsize"   : 10,
 })
@@ -55,8 +59,9 @@ BLUE_ACCENT = "#6c63ff"
 TEAL_ACCENT = "#06d6a0"
 CHURN_COLORS = {"Churned": CHURN_RED, "Stayed": STAY_GREEN, "Joined": WARN_YELLOW}
 
-BASE_DIR   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-IMAGES_DIR = os.path.join(BASE_DIR, "images", "rca")
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR    = os.path.dirname(os.path.dirname(_SCRIPT_DIR))
+IMAGES_DIR  = os.path.join(BASE_DIR, "images", "rca")
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
 def save(name):

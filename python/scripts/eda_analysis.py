@@ -14,12 +14,15 @@
 # =============================================================================
 
 import os
+import sys
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 import warnings
 import numpy as np
 import pandas as pd
 
 # Matplotlib & Seaborn for static charts
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import seaborn as sns
@@ -32,53 +35,56 @@ from plotly.subplots import make_subplots
 # Suppress non-critical warnings for clean output
 warnings.filterwarnings("ignore")
 
-# ── Global Style Configuration ────────────────────────────────
+# ——— Global Style Configuration ————————————————————————————————————————————
+sns.set_theme(style="darkgrid", palette="muted")
 plt.rcParams.update({
-    "figure.dpi"        : 130,
-    "figure.facecolor"  : "#0f0f1a",   # dark background
-    "axes.facecolor"    : "#1a1a2e",
-    "axes.edgecolor"    : "#444466",
-    "axes.labelcolor"   : "#e0e0f0",
-    "xtick.color"       : "#b0b0cc",
-    "ytick.color"       : "#b0b0cc",
-    "text.color"        : "#e0e0f0",
-    "grid.color"        : "#2a2a4a",
-    "grid.linestyle"    : "--",
-    "grid.alpha"        : 0.5,
-    "font.family"       : "DejaVu Sans",
-    "axes.titlesize"    : 13,
-    "axes.labelsize"    : 11,
-    "legend.fontsize"   : 10,
+    "figure.facecolor":  "#0f0f1a",
+    "axes.facecolor":    "#1a1a2e",
+    "axes.edgecolor":    "#2a2a4a",
+    "axes.labelcolor":   "#e0e0f0",
+    "xtick.color":       "#b0b0cc",
+    "ytick.color":       "#b0b0cc",
+    "text.color":        "#e0e0f0",
+    "grid.color":        "#2a2a4a",
+    "grid.linestyle":    "--",
+    "grid.alpha":        0.6,
+    "font.family":       "sans-serif",
+    "font.size":         11,
+    "axes.titlesize":    14,
+    "axes.titleweight":  "bold",
+    "figure.titlesize":  16,
+    "figure.titleweight":"bold",
 })
 
-# ── Colour Palette ────────────────────────────────────────────
+# ——— Colour Palette ————————————————————————————————————————————————————————
 PALETTE        = ["#6c63ff", "#ff6584", "#43d9ad", "#ffd166", "#ef8c8c", "#06d6a0"]
 CHURN_COLORS   = {"Churned": "#ff6584", "Stayed": "#43d9ad", "Joined": "#ffd166"}
 CHURN_PALETTE  = [CHURN_COLORS["Churned"], CHURN_COLORS["Stayed"], CHURN_COLORS["Joined"]]
 
-# ── Output Directory for saving charts ────────────────────────
-BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root
-IMAGES_DIR  = os.path.join(BASE_DIR, "images")
+# ——— Output Directory for saving charts ————————————————————————————————————
+_SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR      = os.path.dirname(os.path.dirname(_SCRIPT_DIR))  # project root
+IMAGES_DIR    = os.path.join(BASE_DIR, "images")
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
 def save_fig(filename: str):
     """Save the current matplotlib figure to the images directory."""
     path = os.path.join(IMAGES_DIR, filename)
     plt.savefig(path, bbox_inches="tight", facecolor=plt.rcParams["figure.facecolor"])
-    print(f"  ✅ Saved: images/{filename}")
+    print(f"  âœ… Saved: images/{filename}")
 
-print("✅ Libraries imported successfully.")
-print(f"📁 Charts will be saved to: {IMAGES_DIR}\n")
+print("âœ… Libraries imported successfully.")
+print(f"ðŸ“ Charts will be saved to: {IMAGES_DIR}\n")
 
 
 # =============================================================================
-# SECTION 2 — LOAD DATASET
+# SECTION 2 â€” LOAD DATASET
 # =============================================================================
 
-# ── 2.1  Define file path ─────────────────────────────────────
+# â”€â”€ 2.1  Define file path â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 DATA_PATH = os.path.join(BASE_DIR, "Customer_Data.csv")
 
-# ── 2.2  Load raw CSV ─────────────────────────────────────────
+# â”€â”€ 2.2  Load raw CSV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 df_raw = pd.read_csv(
     DATA_PATH,
     dtype={
@@ -108,30 +114,30 @@ df_raw = pd.read_csv(
     }
 )
 
-# ── 2.3  Work on a copy; preserve raw ─────────────────────────
+# â”€â”€ 2.3  Work on a copy; preserve raw â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 df = df_raw.copy()
 
-# ── 2.4  Strip leading/trailing whitespace from string columns ─
+# â”€â”€ 2.4  Strip leading/trailing whitespace from string columns â”€
 str_cols = df.select_dtypes(include="object").columns
 df[str_cols] = df[str_cols].apply(lambda col: col.str.strip())
 
-print(f"✅ Dataset loaded: {df.shape[0]:,} rows × {df.shape[1]} columns")
+print(f"âœ… Dataset loaded: {df.shape[0]:,} rows Ã— {df.shape[1]} columns")
 print(f"   File: {DATA_PATH}\n")
 
 
 # =============================================================================
-# SECTION 3 — DATA OVERVIEW
+# SECTION 3 â€” DATA OVERVIEW
 # =============================================================================
 
 print("=" * 65)
-print("SECTION 3 — DATA OVERVIEW")
+print("SECTION 3 â€” DATA OVERVIEW")
 print("=" * 65)
 
-# ── 3.1  Shape ────────────────────────────────────────────────
-print(f"\n📐 Shape : {df.shape[0]:,} rows × {df.shape[1]} columns")
+# â”€â”€ 3.1  Shape â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print(f"\nðŸ“ Shape : {df.shape[0]:,} rows Ã— {df.shape[1]} columns")
 
-# ── 3.2  Column data types ────────────────────────────────────
-print("\n📋 Column Data Types:")
+# â”€â”€ 3.2  Column data types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸ“‹ Column Data Types:")
 dtype_df = pd.DataFrame({
     "Column"   : df.columns,
     "Dtype"    : df.dtypes.values,
@@ -141,33 +147,33 @@ dtype_df = pd.DataFrame({
 })
 print(dtype_df.to_string(index=False))
 
-# ── 3.3  First 5 rows ─────────────────────────────────────────
-print("\n🔍 First 5 Rows:")
+# â”€â”€ 3.3  First 5 rows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸ” First 5 Rows:")
 print(df.head().to_string())
 
-# ── 3.4  Last 5 rows ──────────────────────────────────────────
-print("\n🔍 Last 5 Rows:")
+# â”€â”€ 3.4  Last 5 rows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸ” Last 5 Rows:")
 print(df.tail().to_string())
 
-# ── 3.5  Target variable distribution ─────────────────────────
-print("\n🎯 Target Variable (Customer_Status) Distribution:")
+# â”€â”€ 3.5  Target variable distribution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸŽ¯ Target Variable (Customer_Status) Distribution:")
 status_counts = df["Customer_Status"].value_counts()
 status_pct    = df["Customer_Status"].value_counts(normalize=True).mul(100).round(2)
 print(pd.DataFrame({"Count": status_counts, "Percent (%)": status_pct}))
 
 
 # =============================================================================
-# SECTION 4 — MISSING VALUES ANALYSIS
+# SECTION 4 â€” MISSING VALUES ANALYSIS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 4 — MISSING VALUES ANALYSIS")
+print("SECTION 4 â€” MISSING VALUES ANALYSIS")
 print("=" * 65)
 
-# ── 4.1  Replace empty strings with NaN for uniform handling ──
+# â”€â”€ 4.1  Replace empty strings with NaN for uniform handling â”€â”€
 df.replace("", np.nan, inplace=True)
 
-# ── 4.2  Missing value summary ────────────────────────────────
+# â”€â”€ 4.2  Missing value summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 missing = (
     pd.DataFrame({
         "Missing Count" : df.isnull().sum(),
@@ -176,10 +182,10 @@ missing = (
     .query("`Missing Count` > 0")
     .sort_values("Missing Count", ascending=False)
 )
-print(f"\n📊 Columns with missing values ({len(missing)} out of {df.shape[1]}):")
+print(f"\nðŸ“Š Columns with missing values ({len(missing)} out of {df.shape[1]}):")
 print(missing.to_string())
 
-# ── 4.3  Visualise missing values — Seaborn heatmap ──────────
+# â”€â”€ 4.3  Visualise missing values â€” Seaborn heatmap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, ax = plt.subplots(figsize=(14, 6))
 missing_matrix = df.isnull().astype(int)
 sns.heatmap(
@@ -197,7 +203,7 @@ plt.tight_layout()
 save_fig("01_missing_values_heatmap.png")
 plt.show()
 
-# ── 4.4  Apply cleaning to structural blanks ──────────────────
+# â”€â”€ 4.4  Apply cleaning to structural blanks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # (Mirrors the SQL cleaning from 03_data_cleaning.sql)
 INTERNET_ADDONS = [
     "Internet_Type", "Online_Security", "Online_Backup",
@@ -239,41 +245,41 @@ addon_cols = [
 ]
 df["Addon_Count"] = df[addon_cols].apply(lambda row: (row == "Yes").sum(), axis=1)
 
-print("\n✅ Structural blanks handled. Missing value count after cleaning:")
+print("\nâœ… Structural blanks handled. Missing value count after cleaning:")
 print(df.isnull().sum()[df.isnull().sum() > 0])
 
 
 # =============================================================================
-# SECTION 5 — SUMMARY STATISTICS
+# SECTION 5 â€” SUMMARY STATISTICS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 5 — SUMMARY STATISTICS")
+print("SECTION 5 â€” SUMMARY STATISTICS")
 print("=" * 65)
 
-# ── 5.1  Numerical columns ────────────────────────────────────
+# â”€â”€ 5.1  Numerical columns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 NUM_COLS = [
     "Age", "Number_of_Referrals", "Tenure_in_Months",
     "Monthly_Charge", "Total_Charges", "Total_Refunds",
     "Total_Extra_Data_Charges", "Total_Long_Distance_Charges", "Total_Revenue",
 ]
-print("\n📈 Numerical Summary Statistics:")
+print("\nðŸ“ˆ Numerical Summary Statistics:")
 print(df[NUM_COLS].describe().round(2).to_string())
 
-# ── 5.2  Categorical columns ──────────────────────────────────
+# â”€â”€ 5.2  Categorical columns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 CAT_COLS = [
     "Gender", "Married", "Contract", "Payment_Method",
     "Internet_Type", "Customer_Status", "Churn_Category",
 ]
-print("\n📊 Categorical Column Value Counts (Top 5 per column):")
+print("\nðŸ“Š Categorical Column Value Counts (Top 5 per column):")
 for col in CAT_COLS:
     print(f"\n  [{col}]")
     print(df[col].value_counts().head(5).to_string())
 
-# ── 5.3  Churn-specific statistics ────────────────────────────
+# â”€â”€ 5.3  Churn-specific statistics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 df_churn   = df[df["Customer_Status"] == "Churned"]
 df_stayed  = df[df["Customer_Status"] == "Stayed"]
-print("\n📊 Mean Statistics: Churned vs. Stayed")
+print("\nðŸ“Š Mean Statistics: Churned vs. Stayed")
 comparison = pd.DataFrame({
     "Churned Avg" : df_churn[NUM_COLS].mean().round(2),
     "Stayed Avg"  : df_stayed[NUM_COLS].mean().round(2),
@@ -283,16 +289,16 @@ print(comparison.to_string())
 
 
 # =============================================================================
-# SECTION 6 — UNIVARIATE ANALYSIS
+# SECTION 6 â€” UNIVARIATE ANALYSIS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 6 — UNIVARIATE ANALYSIS")
+print("SECTION 6 â€” UNIVARIATE ANALYSIS")
 print("=" * 65)
 
-# ── 6.1  Distribution of all numerical columns (Matplotlib) ──
+# â”€â”€ 6.1  Distribution of all numerical columns (Matplotlib) â”€â”€
 fig, axes = plt.subplots(3, 3, figsize=(16, 12))
-fig.suptitle("Univariate Distribution — Numerical Columns", fontsize=15, y=1.02)
+fig.suptitle("Univariate Distribution â€” Numerical Columns", fontsize=15, y=1.02)
 axes = axes.flatten()
 
 for i, col in enumerate(NUM_COLS):
@@ -310,13 +316,13 @@ plt.tight_layout()
 save_fig("02_univariate_numerical.png")
 plt.show()
 
-# ── 6.2  Categorical value counts (Matplotlib) ────────────────
+# â”€â”€ 6.2  Categorical value counts (Matplotlib) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 cat_plot_cols = [
     "Contract", "Payment_Method", "Internet_Type",
     "Gender", "Married", "Paperless_Billing", "Value_Deal",
 ]
 fig, axes = plt.subplots(2, 4, figsize=(20, 9))
-fig.suptitle("Univariate Distribution — Categorical Columns", fontsize=15)
+fig.suptitle("Univariate Distribution â€” Categorical Columns", fontsize=15)
 axes = axes.flatten()
 
 for i, col in enumerate(cat_plot_cols):
@@ -336,7 +342,7 @@ plt.tight_layout()
 save_fig("03_univariate_categorical.png")
 plt.show()
 
-# ── 6.3  Plotly interactive: Monthly Charge distribution ──────
+# â”€â”€ 6.3  Plotly interactive: Monthly Charge distribution â”€â”€â”€â”€â”€â”€
 fig_plotly = px.histogram(
     df[df["Customer_Status"].isin(["Churned", "Stayed"])],
     x="Monthly_Charge",
@@ -345,25 +351,25 @@ fig_plotly = px.histogram(
     barmode="overlay",
     opacity=0.75,
     color_discrete_map=CHURN_COLORS,
-    title="Monthly Charge Distribution — Churned vs. Stayed",
-    labels={"Monthly_Charge": "Monthly Charge (₹)", "count": "Number of Customers"},
+    title="Monthly Charge Distribution â€” Churned vs. Stayed",
+    labels={"Monthly_Charge": "Monthly Charge (â‚¹)", "count": "Number of Customers"},
     template="plotly_dark",
 )
 fig_plotly.update_layout(legend_title="Status", bargap=0.05)
 fig_plotly.write_html(os.path.join(IMAGES_DIR, "06a_monthly_charge_dist_interactive.html"))
 fig_plotly.show()
-print("  ✅ Interactive chart saved: images/06a_monthly_charge_dist_interactive.html")
+print("  âœ… Interactive chart saved: images/06a_monthly_charge_dist_interactive.html")
 
 
 # =============================================================================
-# SECTION 7 — CHURN DISTRIBUTION
+# SECTION 7 â€” CHURN DISTRIBUTION
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 7 — CHURN DISTRIBUTION")
+print("SECTION 7 â€” CHURN DISTRIBUTION")
 print("=" * 65)
 
-# ── 7.1  Donut chart: Overall churn split ─────────────────────
+# â”€â”€ 7.1  Donut chart: Overall churn split â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 status_counts = df["Customer_Status"].value_counts()
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 fig.suptitle("Customer Status Distribution", fontsize=15)
@@ -408,7 +414,7 @@ plt.tight_layout()
 save_fig("04_churn_distribution.png")
 plt.show()
 
-# ── 7.2  Plotly interactive donut chart ──────────────────────
+# â”€â”€ 7.2  Plotly interactive donut chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig_donut = go.Figure(data=[go.Pie(
     labels=status_counts.index,
     values=status_counts.values,
@@ -425,15 +431,15 @@ fig_donut.update_layout(
 )
 fig_donut.write_html(os.path.join(IMAGES_DIR, "04a_churn_distribution_interactive.html"))
 fig_donut.show()
-print("  ✅ Interactive chart saved: images/04a_churn_distribution_interactive.html")
+print("  âœ… Interactive chart saved: images/04a_churn_distribution_interactive.html")
 
 
 # =============================================================================
-# SECTION 8 — BIVARIATE ANALYSIS
+# SECTION 8 â€” BIVARIATE ANALYSIS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 8 — BIVARIATE ANALYSIS")
+print("SECTION 8 â€” BIVARIATE ANALYSIS")
 print("=" * 65)
 
 # Filter to Churned + Stayed only for churn-rate comparisons
@@ -449,7 +455,7 @@ def churn_rate_by(col: str, data: pd.DataFrame = df_cs) -> pd.DataFrame:
         .reset_index()
     )
 
-# ── 8.1  Churn rate by key categorical variables (Matplotlib grid) ─
+# â”€â”€ 8.1  Churn rate by key categorical variables (Matplotlib grid) â”€
 biv_cols = ["Contract", "Internet_Type", "Payment_Method", "Tenure_Group",
             "Age_Group", "Monthly_Charge_Tier"]
 
@@ -489,7 +495,7 @@ plt.tight_layout()
 save_fig("05_bivariate_churn_rates.png")
 plt.show()
 
-# ── 8.2  Plotly: Churn rate by Contract type (interactive bar) ─
+# â”€â”€ 8.2  Plotly: Churn rate by Contract type (interactive bar) â”€
 cr_contract = churn_rate_by("Contract")
 fig_contract = px.bar(
     cr_contract,
@@ -506,9 +512,9 @@ fig_contract.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
 fig_contract.update_layout(coloraxis_showscale=False)
 fig_contract.write_html(os.path.join(IMAGES_DIR, "05a_churn_by_contract_interactive.html"))
 fig_contract.show()
-print("  ✅ Interactive chart saved: images/05a_churn_by_contract_interactive.html")
+print("  âœ… Interactive chart saved: images/05a_churn_by_contract_interactive.html")
 
-# ── 8.3  Box plots: Monthly Charge vs. Customer Status ────────
+# â”€â”€ 8.3  Box plots: Monthly Charge vs. Customer Status â”€â”€â”€â”€â”€â”€â”€â”€
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 fig.suptitle("Financial Metrics by Customer Status", fontsize=14)
 fin_cols = ["Monthly_Charge", "Total_Charges", "Total_Revenue"]
@@ -531,7 +537,7 @@ plt.tight_layout()
 save_fig("07_boxplot_financial_by_status.png")
 plt.show()
 
-# ── 8.4  Violin plot: Tenure by Customer Status ───────────────
+# â”€â”€ 8.4  Violin plot: Tenure by Customer Status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.violinplot(
     data=df[df["Customer_Status"].isin(["Churned", "Stayed"])],
@@ -551,14 +557,14 @@ plt.show()
 
 
 # =============================================================================
-# SECTION 9 — CUSTOMER DEMOGRAPHICS
+# SECTION 9 â€” CUSTOMER DEMOGRAPHICS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 9 — CUSTOMER DEMOGRAPHICS")
+print("SECTION 9 â€” CUSTOMER DEMOGRAPHICS")
 print("=" * 65)
 
-# ── 9.1  Gender × Churn stacked bar (Matplotlib) ──────────────
+# â”€â”€ 9.1  Gender Ã— Churn stacked bar (Matplotlib) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 fig.suptitle("Churn Rates Across Demographics", fontsize=14)
 
@@ -588,7 +594,7 @@ plt.tight_layout()
 save_fig("09_demographics_churn_stacked.png")
 plt.show()
 
-# ── 9.2  Age distribution by churn status (Plotly) ────────────
+# â”€â”€ 9.2  Age distribution by churn status (Plotly) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig_age = px.histogram(
     df_cs,
     x="Age",
@@ -597,16 +603,16 @@ fig_age = px.histogram(
     barmode="overlay",
     opacity=0.75,
     color_discrete_map=CHURN_COLORS,
-    title="Age Distribution — Churned vs. Stayed",
+    title="Age Distribution â€” Churned vs. Stayed",
     labels={"Age": "Customer Age", "count": "Count"},
     template="plotly_dark",
 )
 fig_age.update_layout(bargap=0.02, legend_title="Status")
 fig_age.write_html(os.path.join(IMAGES_DIR, "09a_age_distribution_interactive.html"))
 fig_age.show()
-print("  ✅ Interactive chart saved: images/09a_age_distribution_interactive.html")
+print("  âœ… Interactive chart saved: images/09a_age_distribution_interactive.html")
 
-# ── 9.3  State-wise churn rate (Plotly choropleth — bar substitute) ─
+# â”€â”€ 9.3  State-wise churn rate (Plotly choropleth â€” bar substitute) â”€
 state_churn = (
     df_cs.groupby("State")
     .agg(Total=("Churn_Flag","count"), Churned=("Churn_Flag","sum"))
@@ -631,18 +637,18 @@ fig_state.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
 fig_state.update_layout(coloraxis_showscale=False, yaxis={"categoryorder": "total ascending"})
 fig_state.write_html(os.path.join(IMAGES_DIR, "09b_state_churn_rate_interactive.html"))
 fig_state.show()
-print("  ✅ Interactive chart saved: images/09b_state_churn_rate_interactive.html")
+print("  âœ… Interactive chart saved: images/09b_state_churn_rate_interactive.html")
 
 
 # =============================================================================
-# SECTION 10 — REVENUE ANALYSIS
+# SECTION 10 â€” REVENUE ANALYSIS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 10 — REVENUE ANALYSIS")
+print("SECTION 10 â€” REVENUE ANALYSIS")
 print("=" * 65)
 
-# ── 10.1  Revenue summary table ───────────────────────────────
+# â”€â”€ 10.1  Revenue summary table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 rev_summary = df.groupby("Customer_Status").agg(
     Customers         = ("Customer_ID",    "count"),
     Total_Revenue     = ("Total_Revenue",  "sum"),
@@ -650,10 +656,10 @@ rev_summary = df.groupby("Customer_Status").agg(
     Avg_Monthly       = ("Monthly_Charge", "mean"),
     Total_Monthly     = ("Monthly_Charge", "sum"),
 ).round(2)
-print("\n💰 Revenue Summary by Customer Status:")
+print("\nðŸ’° Revenue Summary by Customer Status:")
 print(rev_summary.to_string())
 
-# ── 10.2  Revenue lost vs retained (Matplotlib) ───────────────
+# â”€â”€ 10.2  Revenue lost vs retained (Matplotlib) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, axes = plt.subplots(1, 2, figsize=(15, 6))
 fig.suptitle("Revenue Analysis", fontsize=14)
 
@@ -661,10 +667,10 @@ fig.suptitle("Revenue Analysis", fontsize=14)
 rev_total = df.groupby("Customer_Status")["Total_Revenue"].sum() / 1e6  # in millions
 axes[0].bar(rev_total.index, rev_total.values,
             color=CHURN_PALETTE[:len(rev_total)], edgecolor="#0f0f1a", linewidth=1.5, width=0.5)
-axes[0].set_title("Total Revenue by Customer Status (₹ Millions)")
-axes[0].set_ylabel("Total Revenue (₹ Millions)")
+axes[0].set_title("Total Revenue by Customer Status (â‚¹ Millions)")
+axes[0].set_ylabel("Total Revenue (â‚¹ Millions)")
 for i, (idx, val) in enumerate(rev_total.items()):
-    axes[0].text(i, val + 0.3, f"₹{val:.1f}M", ha="center", fontweight="bold", color="#e0e0f0")
+    axes[0].text(i, val + 0.3, f"â‚¹{val:.1f}M", ha="center", fontweight="bold", color="#e0e0f0")
 axes[0].grid(True, axis="y", alpha=0.3)
 
 # Monthly revenue at risk scatter
@@ -680,7 +686,7 @@ sc = axes[1].scatter(
 )
 axes[1].set_title("Monthly Charge vs. Tenure (Colour = Churn)")
 axes[1].set_xlabel("Tenure (Months)")
-axes[1].set_ylabel("Monthly Charge (₹)")
+axes[1].set_ylabel("Monthly Charge (â‚¹)")
 plt.colorbar(sc, ax=axes[1], label="Churn (1=Yes)")
 axes[1].grid(True, alpha=0.3)
 
@@ -688,7 +694,7 @@ plt.tight_layout()
 save_fig("10_revenue_analysis.png")
 plt.show()
 
-# ── 10.3  Plotly: Revenue lost by Churn Reason (Treemap) ──────
+# â”€â”€ 10.3  Plotly: Revenue lost by Churn Reason (Treemap) â”€â”€â”€â”€â”€â”€
 churn_reason_rev = (
     df[df["Customer_Status"] == "Churned"]
     .groupby(["Churn_Category", "Churn_Reason"])
@@ -701,15 +707,15 @@ fig_tree = px.treemap(
     values="Customers",
     color="Revenue_Lost",
     color_continuous_scale=["#1a1a2e", "#ff6584"],
-    title="Churn Reason Treemap — Size = Customers | Colour = Revenue Lost",
+    title="Churn Reason Treemap â€” Size = Customers | Colour = Revenue Lost",
     template="plotly_dark",
 )
 fig_tree.update_traces(textinfo="label+value+percent parent")
 fig_tree.write_html(os.path.join(IMAGES_DIR, "10a_churn_reason_treemap.html"))
 fig_tree.show()
-print("  ✅ Interactive treemap saved: images/10a_churn_reason_treemap.html")
+print("  âœ… Interactive treemap saved: images/10a_churn_reason_treemap.html")
 
-# ── 10.4  Plotly: Monthly Charge by Contract and Status (Box) ─
+# â”€â”€ 10.4  Plotly: Monthly Charge by Contract and Status (Box) â”€
 fig_box = px.box(
     df_cs,
     x="Contract",
@@ -717,31 +723,31 @@ fig_box = px.box(
     color="Customer_Status",
     color_discrete_map=CHURN_COLORS,
     title="Monthly Charge Distribution by Contract Type and Churn Status",
-    labels={"Monthly_Charge": "Monthly Charge (₹)", "Contract": "Contract Type"},
+    labels={"Monthly_Charge": "Monthly Charge (â‚¹)", "Contract": "Contract Type"},
     template="plotly_dark",
     notched=True,
 )
 fig_box.write_html(os.path.join(IMAGES_DIR, "10b_monthly_charge_contract_box.html"))
 fig_box.show()
-print("  ✅ Interactive box plot saved: images/10b_monthly_charge_contract_box.html")
+print("  âœ… Interactive box plot saved: images/10b_monthly_charge_contract_box.html")
 
 
 # =============================================================================
-# SECTION 11 — CORRELATION ANALYSIS
+# SECTION 11 â€” CORRELATION ANALYSIS
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 11 — CORRELATION ANALYSIS")
+print("SECTION 11 â€” CORRELATION ANALYSIS")
 print("=" * 65)
 
-# ── 11.1  Correlation matrix of numerical columns ─────────────
+# â”€â”€ 11.1  Correlation matrix of numerical columns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 corr_cols = NUM_COLS + ["Churn_Flag", "Addon_Count"]
 corr_matrix = df[corr_cols].corr().round(3)
 
-print("\n📊 Correlation Matrix:")
+print("\nðŸ“Š Correlation Matrix:")
 print(corr_matrix.to_string())
 
-# ── 11.2  Seaborn heatmap ─────────────────────────────────────
+# â”€â”€ 11.2  Seaborn heatmap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, ax = plt.subplots(figsize=(13, 10))
 mask = np.triu(np.ones_like(corr_matrix, dtype=bool))     # show lower triangle only
 sns.heatmap(
@@ -760,13 +766,13 @@ sns.heatmap(
     cbar_kws={"shrink": 0.8},
     annot_kws={"size": 8},
 )
-ax.set_title("Pearson Correlation Matrix — Numerical Features", pad=15)
+ax.set_title("Pearson Correlation Matrix â€” Numerical Features", pad=15)
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 save_fig("11_correlation_heatmap.png")
 plt.show()
 
-# ── 11.3  Correlation with Churn_Flag (ranked bar chart) ──────
+# â”€â”€ 11.3  Correlation with Churn_Flag (ranked bar chart) â”€â”€â”€â”€â”€â”€
 churn_corr = corr_matrix["Churn_Flag"].drop("Churn_Flag").sort_values()
 fig, ax = plt.subplots(figsize=(10, 6))
 colors = [CHURN_COLORS["Churned"] if v > 0 else CHURN_COLORS["Stayed"] for v in churn_corr.values]
@@ -787,15 +793,15 @@ plt.show()
 
 
 # =============================================================================
-# SECTION 12 — OUTLIER DETECTION
+# SECTION 12 â€” OUTLIER DETECTION
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 12 — OUTLIER DETECTION")
+print("SECTION 12 â€” OUTLIER DETECTION")
 print("=" * 65)
 
-# ── 12.1  IQR-based outlier detection ────────────────────────
-print("\n📊 Outlier Summary (IQR Method):")
+# â”€â”€ 12.1  IQR-based outlier detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸ“Š Outlier Summary (IQR Method):")
 outlier_summary = []
 for col in NUM_COLS:
     Q1  = df[col].quantile(0.25)
@@ -817,9 +823,9 @@ for col in NUM_COLS:
 outlier_df = pd.DataFrame(outlier_summary)
 print(outlier_df.to_string(index=False))
 
-# ── 12.2  Box plots for outlier visualization (Matplotlib) ────
+# â”€â”€ 12.2  Box plots for outlier visualization (Matplotlib) â”€â”€â”€â”€
 fig, axes = plt.subplots(3, 3, figsize=(16, 12))
-fig.suptitle("Outlier Detection — Box Plots (IQR Method)", fontsize=14)
+fig.suptitle("Outlier Detection â€” Box Plots (IQR Method)", fontsize=14)
 axes = axes.flatten()
 
 for i, col in enumerate(NUM_COLS):
@@ -843,7 +849,7 @@ plt.tight_layout()
 save_fig("12_outlier_boxplots.png")
 plt.show()
 
-# ── 12.3  Plotly: Interactive scatter of outliers in Monthly_Charge ─
+# â”€â”€ 12.3  Plotly: Interactive scatter of outliers in Monthly_Charge â”€
 Q1_mc  = df["Monthly_Charge"].quantile(0.25)
 Q3_mc  = df["Monthly_Charge"].quantile(0.75)
 IQR_mc = Q3_mc - Q1_mc
@@ -861,24 +867,24 @@ fig_scatter = px.scatter(
     symbol="Customer_Status",
     opacity=0.7,
     title="Monthly Charge Outliers vs. Tenure",
-    labels={"Monthly_Charge": "Monthly Charge (₹)", "Tenure_in_Months": "Tenure (Months)"},
+    labels={"Monthly_Charge": "Monthly Charge (â‚¹)", "Tenure_in_Months": "Tenure (Months)"},
     template="plotly_dark",
     hover_data=["Customer_ID", "Contract", "Internet_Type"],
 )
 fig_scatter.write_html(os.path.join(IMAGES_DIR, "12a_outlier_scatter_interactive.html"))
 fig_scatter.show()
-print("  ✅ Interactive chart saved: images/12a_outlier_scatter_interactive.html")
+print("  âœ… Interactive chart saved: images/12a_outlier_scatter_interactive.html")
 
 
 # =============================================================================
-# SECTION 13 — CUSTOMER SEGMENTATION
+# SECTION 13 â€” CUSTOMER SEGMENTATION
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 13 — CUSTOMER SEGMENTATION")
+print("SECTION 13 â€” CUSTOMER SEGMENTATION")
 print("=" * 65)
 
-# ── 13.1  Segment definition: Contract × Tenure group ─────────
+# â”€â”€ 13.1  Segment definition: Contract Ã— Tenure group â”€â”€â”€â”€â”€â”€â”€â”€â”€
 seg = (
     df_cs.groupby(["Contract", "Tenure_Group"])
     .agg(
@@ -890,10 +896,10 @@ seg = (
     .assign(Churn_Rate=lambda x: (x["Churned"] / x["Customers"] * 100).round(2))
     .reset_index()
 )
-print("\n📊 Customer Segment Table (Contract × Tenure):")
+print("\nðŸ“Š Customer Segment Table (Contract Ã— Tenure):")
 print(seg.to_string(index=False))
 
-# ── 13.2  Heatmap: Churn Rate by Segment (Matplotlib) ─────────
+# â”€â”€ 13.2  Heatmap: Churn Rate by Segment (Matplotlib) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 pivot_seg = seg.pivot(index="Contract", columns="Tenure_Group", values="Churn_Rate")
 fig, ax = plt.subplots(figsize=(12, 5))
 sns.heatmap(
@@ -907,14 +913,14 @@ sns.heatmap(
     annot_kws={"size": 10, "fontweight": "bold"},
     cbar_kws={"label": "Churn Rate (%)"},
 )
-ax.set_title("Churn Rate Heatmap: Contract Type × Tenure Group", pad=15)
+ax.set_title("Churn Rate Heatmap: Contract Type Ã— Tenure Group", pad=15)
 ax.set_xlabel("Tenure Group")
 ax.set_ylabel("Contract Type")
 plt.tight_layout()
 save_fig("13_segment_heatmap_contract_tenure.png")
 plt.show()
 
-# ── 13.3  Plotly bubble chart: Segment × Revenue × Churn ──────
+# â”€â”€ 13.3  Plotly bubble chart: Segment Ã— Revenue Ã— Churn â”€â”€â”€â”€â”€â”€
 fig_bubble = px.scatter(
     seg,
     x="Avg_Charge",
@@ -925,7 +931,7 @@ fig_bubble = px.scatter(
     text="Tenure_Group",
     title="Customer Segment Bubble Chart<br>X=Avg Monthly Charge | Y=Churn Rate | Size=# Customers",
     labels={
-        "Avg_Charge" : "Avg Monthly Charge (₹)",
+        "Avg_Charge" : "Avg Monthly Charge (â‚¹)",
         "Churn_Rate" : "Churn Rate (%)",
         "Customers"  : "Segment Size",
     },
@@ -936,9 +942,9 @@ fig_bubble = px.scatter(
 fig_bubble.update_traces(textposition="top center", textfont_size=9)
 fig_bubble.write_html(os.path.join(IMAGES_DIR, "13a_segment_bubble_interactive.html"))
 fig_bubble.show()
-print("  ✅ Interactive bubble chart saved: images/13a_segment_bubble_interactive.html")
+print("  âœ… Interactive bubble chart saved: images/13a_segment_bubble_interactive.html")
 
-# ── 13.4  Add-on count vs churn rate — line plot ──────────────
+# â”€â”€ 13.4  Add-on count vs churn rate â€” line plot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 addon_churn = (
     df_cs.groupby("Addon_Count")
     .agg(Customers=("Churn_Flag","count"), Churned=("Churn_Flag","sum"))
@@ -968,8 +974,8 @@ plt.tight_layout()
 save_fig("13b_addon_count_churn_rate.png")
 plt.show()
 
-# ── 13.5  Final high-risk segment table ───────────────────────
-print("\n🔴 HIGH-RISK SEGMENTS (Churn Rate > 30%):")
+# â”€â”€ 13.5  Final high-risk segment table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+print("\nðŸ”´ HIGH-RISK SEGMENTS (Churn Rate > 30%):")
 high_risk = (
     df_cs.groupby(["Contract", "Internet_Type", "Tenure_Group"])
     .agg(Customers=("Churn_Flag","count"), Churned=("Churn_Flag","sum"),
@@ -983,11 +989,11 @@ print(high_risk.to_string(index=False))
 
 
 # =============================================================================
-# SECTION 14 — SUMMARY REPORT
+# SECTION 14 â€” SUMMARY REPORT
 # =============================================================================
 
 print("\n" + "=" * 65)
-print("SECTION 14 — EDA SUMMARY REPORT")
+print("SECTION 14 â€” EDA SUMMARY REPORT")
 print("=" * 65)
 
 total        = len(df_cs)
@@ -999,39 +1005,40 @@ mtm_at_risk  = df[
 ]["Monthly_Charge"].sum()
 
 print(f"""
-╔══════════════════════════════════════════════════════════╗
-║            CUSTOMER CHURN EDA — KEY FINDINGS            ║
-╠══════════════════════════════════════════════════════════╣
-║  Total Customers Analysed  : {total:>10,}                  ║
-║  Total Churned             : {churned:>10,}                  ║
-║  Overall Churn Rate        : {churn_rate:>9.2f}%                  ║
-║  Lifetime Revenue Lost     : ₹{rev_lost:>12,.2f}             ║
-║  Monthly Revenue at Risk   : ₹{mtm_at_risk:>12,.2f}             ║
-╠══════════════════════════════════════════════════════════╣
-║  TOP CHURN DRIVERS                                       ║
-║  1. Contract Type  → Month-to-Month has highest churn   ║
-║  2. Tenure         → 0-6 months at highest risk         ║
-║  3. Internet Type  → Fiber Optic customers churn most   ║
-║  4. Monthly Charge → High bills = price sensitivity     ║
-║  5. Addon Count    → Fewer add-ons = more likely to go  ║
-╠══════════════════════════════════════════════════════════╣
-║  CHARTS SAVED TO: images/                               ║
-║  01_missing_values_heatmap.png                          ║
-║  02_univariate_numerical.png                            ║
-║  03_univariate_categorical.png                          ║
-║  04_churn_distribution.png                              ║
-║  05_bivariate_churn_rates.png                           ║
-║  07_boxplot_financial_by_status.png                     ║
-║  08_violin_tenure_by_status.png                         ║
-║  09_demographics_churn_stacked.png                      ║
-║  10_revenue_analysis.png                                ║
-║  11_correlation_heatmap.png                             ║
-║  11b_churn_correlation_ranked.png                       ║
-║  12_outlier_boxplots.png                                ║
-║  13_segment_heatmap_contract_tenure.png                 ║
-║  13b_addon_count_churn_rate.png                         ║
-║  + 8 interactive Plotly HTML charts                     ║
-╚══════════════════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘            CUSTOMER CHURN EDA â€” KEY FINDINGS            â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘  Total Customers Analysed  : {total:>10,}                  â•‘
+â•‘  Total Churned             : {churned:>10,}                  â•‘
+â•‘  Overall Churn Rate        : {churn_rate:>9.2f}%                  â•‘
+â•‘  Lifetime Revenue Lost     : â‚¹{rev_lost:>12,.2f}             â•‘
+â•‘  Monthly Revenue at Risk   : â‚¹{mtm_at_risk:>12,.2f}             â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘  TOP CHURN DRIVERS                                       â•‘
+â•‘  1. Contract Type  â†’ Month-to-Month has highest churn   â•‘
+â•‘  2. Tenure         â†’ 0-6 months at highest risk         â•‘
+â•‘  3. Internet Type  â†’ Fiber Optic customers churn most   â•‘
+â•‘  4. Monthly Charge â†’ High bills = price sensitivity     â•‘
+â•‘  5. Addon Count    â†’ Fewer add-ons = more likely to go  â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘  CHARTS SAVED TO: images/                               â•‘
+â•‘  01_missing_values_heatmap.png                          â•‘
+â•‘  02_univariate_numerical.png                            â•‘
+â•‘  03_univariate_categorical.png                          â•‘
+â•‘  04_churn_distribution.png                              â•‘
+â•‘  05_bivariate_churn_rates.png                           â•‘
+â•‘  07_boxplot_financial_by_status.png                     â•‘
+â•‘  08_violin_tenure_by_status.png                         â•‘
+â•‘  09_demographics_churn_stacked.png                      â•‘
+â•‘  10_revenue_analysis.png                                â•‘
+â•‘  11_correlation_heatmap.png                             â•‘
+â•‘  11b_churn_correlation_ranked.png                       â•‘
+â•‘  12_outlier_boxplots.png                                â•‘
+â•‘  13_segment_heatmap_contract_tenure.png                 â•‘
+â•‘  13b_addon_count_churn_rate.png                         â•‘
+â•‘  + 8 interactive Plotly HTML charts                     â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 """)
 
-print("✅ EDA Complete!")
+print("âœ… EDA Complete!")
+

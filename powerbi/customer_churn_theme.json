@@ -1,0 +1,104 @@
+// ============================================================
+//  File     : customer_churn_theme.json
+//  Purpose  : Custom Power BI theme for Customer Churn Dashboard
+//  Apply    : View → Themes → Browse for themes → select this file
+// ============================================================
+{
+  "name": "Customer Churn Dark Pro",
+  "dataColors": [
+    "#6C63FF",
+    "#FF6584",
+    "#43D9AD",
+    "#FFD166",
+    "#EF8C8C",
+    "#06D6A0",
+    "#118AB2",
+    "#C77DFF",
+    "#FF9F1C",
+    "#2EC4B6"
+  ],
+  "background": "#0F0F1A",
+  "foreground": "#E0E0F0",
+  "tableAccent": "#6C63FF",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "fontFamily": [{ "value": "Segoe UI" }],
+        "fontSize":   [{ "value": 11 }],
+        "color":      [{ "solid": { "color": "#E0E0F0" } }]
+      },
+      "background": [
+        { "solid": { "color": "#1A1A2E" } }
+      ],
+      "border": [
+        { "show": true, "color": { "solid": { "color": "#2A2A4A" } }, "radius": 8 }
+      ],
+      "dropShadow": [
+        { "show": true, "position": "outer", "color": { "solid": { "color": "#00000044" } } }
+      ]
+    },
+    "card": {
+      "*": {
+        "calloutValue": [
+          { "color": { "solid": { "color": "#FFFFFF" } }, "fontSize": [{ "value": 32 }], "fontFamily": [{ "value": "Segoe UI Semibold" }] }
+        ],
+        "label": [
+          { "color": { "solid": { "color": "#B0B0CC" } }, "fontSize": [{ "value": 11 }] }
+        ],
+        "background": [
+          { "solid": { "color": "#1E1E32" } }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "background": [{ "solid": { "color": "#1A1A2E" } }],
+        "header": [
+          { "fontColor": { "solid": { "color": "#6C63FF" } }, "background": { "solid": { "color": "#12122A" } } }
+        ],
+        "items": [
+          { "fontColor": { "solid": { "color": "#E0E0F0" } } }
+        ]
+      }
+    },
+    "columnChart": {
+      "*": {
+        "dataPoint": [
+          { "defaultColor": { "solid": { "color": "#6C63FF" } } }
+        ]
+      }
+    },
+    "gauge": {
+      "*": {
+        "dataPoint": [
+          { "fill": { "solid": { "color": "#FF6584" } } }
+        ],
+        "target": [
+          { "show": true, "color": { "solid": { "color": "#FFD166" } } }
+        ]
+      }
+    },
+    "title": {
+      "*": {
+        "color": [{ "solid": { "color": "#E0E0F0" } }],
+        "background": [{ "solid": { "color": "#12122A" } }],
+        "fontSize": [{ "value": 13 }],
+        "fontFamily": [{ "value": "Segoe UI Semibold" }]
+      }
+    }
+  },
+  "textClasses": {
+    "label":           { "color": "#B0B0CC", "fontSize": 10 },
+    "callout":         { "color": "#FFFFFF",  "fontSize": 32, "fontFace": "Segoe UI Semibold" },
+    "title":           { "color": "#E0E0F0",  "fontSize": 13, "fontFace": "Segoe UI Semibold" },
+    "header":          { "color": "#6C63FF",  "fontSize": 12, "fontFace": "Segoe UI Semibold" },
+    "largeTitle":      { "color": "#FFFFFF",  "fontSize": 20, "fontFace": "Segoe UI Semibold" }
+  },
+  "good":    "#43D9AD",
+  "neutral": "#FFD166",
+  "bad":     "#FF6584",
+  "maximum": "#FF6584",
+  "center":  "#FFD166",
+  "minimum": "#43D9AD",
+  "null":    "#555577"
+}

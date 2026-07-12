@@ -1,0 +1,5 @@
+# Exclude generated Plotly HTML files and images from GitHub Language bar statistics
+*.html linguist-generated=true
+images/** linguist-generated=true
+*.sql linguist-language=SQL
+*.py linguist-language=Python

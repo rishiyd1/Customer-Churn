@@ -1,0 +1,41 @@
+# .gitignore — Customer Churn Analysis Project
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# ── Data Files (keep raw CSV in repo; ignore large exports) ──
+data/processed/*.csv
+data/exports/*.csv
+data/exports/*.xlsx
+
+# ── Power BI ──────────────────────────────────────────────
+# Uncomment below if .pbix is too large for Git
+# powerbi/*.pbix
+
+# ── OS / Editor ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.log
+
+# ── Credentials / Secrets ─────────────────────────────────
+*.env
+.env
+config.ini
+secrets.json

@@ -39,5 +39,8 @@ Thumbs.db
 .env
 config.ini
 secrets.json
+
+# ── Generated Interactive Charts (Plotly HTML exports) ──
+*.html
 images/**/*.html
 

@@ -169,7 +169,7 @@ axes[1].grid(True, axis="x", alpha=0.3)
 
 plt.tight_layout()
 save("rca01_churn_categories.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 3.3  Top 15 specific churn reasons ───────────────────────
 reason_table = (
@@ -212,7 +212,7 @@ legend_patches = [mpatches.Patch(color=v, label=k) for k,v in cat_color_map.item
 ax.legend(handles=legend_patches, title="Churn Category", loc="lower right", fontsize=8)
 plt.tight_layout()
 save("rca02_top15_churn_reasons.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 3.4  Plotly treemap ───────────────────────────────────────
 full_reason = (
@@ -232,7 +232,7 @@ fig_tree = px.treemap(
 fig_tree.update_traces(textinfo="label+value+percent parent",
                         textfont=dict(size=11))
 save_html(fig_tree, "rca03_churn_treemap.html")
-fig_tree.show()
+# [disabled .show() for headless mode]
 
 
 # =============================================================================
@@ -277,7 +277,7 @@ for bar in bars:
 ax.grid(True, axis="x", alpha=0.3)
 plt.tight_layout()
 save("rca04_leading_indicators_lift.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 4.3  Print insight summary ───────────────────────────────
 for _, row in indicator_df.iterrows():
@@ -347,7 +347,7 @@ axes[2].grid(True, axis="y", alpha=0.3)
 
 plt.tight_layout()
 save("rca05_behaviour_before_churn.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 5.3  Extra data charges & refunds as pre-churn signals ───
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -376,7 +376,7 @@ axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
 save("rca06_pre_churn_signals.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 5.4  Behaviour summary table ─────────────────────────────
 print("\n📊 Pre-Churn Behavioural Signals — Quantified:")
@@ -454,7 +454,7 @@ ax.legend(fontsize=9, loc="upper right")
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
 save("rca07_high_risk_zone_scatter.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 6.3  Define the high-risk profile in numbers ──────────────
 high_risk = df_cs[
@@ -517,7 +517,7 @@ axes[1].set_ylabel("Tenure Group")
 plt.suptitle("Customer Segment Churn Rate Heatmaps", fontsize=14, y=1.02)
 plt.tight_layout()
 save("rca08_segment_heatmaps.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 7.3  Churn rate by Addon Count — monotonic decrease? ──────
 addon_rate = (
@@ -550,7 +550,7 @@ l2, lab2 = ax2.get_legend_handles_labels()
 ax1.legend(l1+l2, lab1+lab2, loc="upper right")
 plt.tight_layout()
 save("rca09_addon_stickiness.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # ── 7.4  Plotly Sunburst: Category → Contract → Segment ───────
 seg_data = (
@@ -570,7 +570,7 @@ fig_sun = px.sunburst(
 )
 fig_sun.update_traces(textinfo="label+value+percent parent")
 save_html(fig_sun, "rca10_segment_sunburst.html")
-fig_sun.show()
+# [disabled .show() for headless mode]
 
 # ── 7.5  Plotly: Churn reason by Internet Type ────────────────
 reason_internet = (
@@ -590,7 +590,7 @@ fig_ri = px.bar(
     template="plotly_dark",
 )
 save_html(fig_ri, "rca11_churn_reason_by_internet.html")
-fig_ri.show()
+# [disabled .show() for headless mode]
 
 
 # =============================================================================
@@ -664,7 +664,7 @@ axes[1].grid(True, axis="x", alpha=0.3)
 
 plt.tight_layout()
 save("rca12_deepdive_comp_dissatisfaction.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 
 # =============================================================================
@@ -702,7 +702,7 @@ fig_dim = px.bar(
 )
 fig_dim.update_layout(yaxis={"categoryorder":"total ascending"})
 save_html(fig_dim, "rca13_all_dimensions_churn_rate.html")
-fig_dim.show()
+# [disabled .show() for headless mode]
 
 # ── 10.2  Final printed RCA summary ───────────────────────────
 total_ch  = len(df_ch)

@@ -201,7 +201,7 @@ ax.set_xlabel("Customer Records (rows)")
 ax.set_ylabel("Columns")
 plt.tight_layout()
 save_fig("01_missing_values_heatmap.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 4.4  Apply cleaning to structural blanks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # (Mirrors the SQL cleaning from 03_data_cleaning.sql)
@@ -314,7 +314,7 @@ for i, col in enumerate(NUM_COLS):
 
 plt.tight_layout()
 save_fig("02_univariate_numerical.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 6.2  Categorical value counts (Matplotlib) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 cat_plot_cols = [
@@ -340,7 +340,7 @@ for i, col in enumerate(cat_plot_cols):
 axes[-1].set_visible(False)  # hide unused subplot
 plt.tight_layout()
 save_fig("03_univariate_categorical.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 6.3  Plotly interactive: Monthly Charge distribution â”€â”€â”€â”€â”€â”€
 fig_plotly = px.histogram(
@@ -357,7 +357,7 @@ fig_plotly = px.histogram(
 )
 fig_plotly.update_layout(legend_title="Status", bargap=0.05)
 fig_plotly.write_html(os.path.join(IMAGES_DIR, "06a_monthly_charge_dist_interactive.html"))
-fig_plotly.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/06a_monthly_charge_dist_interactive.html")
 
 
@@ -412,7 +412,7 @@ axes[1].grid(True, axis="y", alpha=0.3)
 
 plt.tight_layout()
 save_fig("04_churn_distribution.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 7.2  Plotly interactive donut chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig_donut = go.Figure(data=[go.Pie(
@@ -430,7 +430,7 @@ fig_donut.update_layout(
                       showarrow=False, font_color="white")],
 )
 fig_donut.write_html(os.path.join(IMAGES_DIR, "04a_churn_distribution_interactive.html"))
-fig_donut.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/04a_churn_distribution_interactive.html")
 
 
@@ -493,7 +493,7 @@ for i, col in enumerate(biv_cols):
 
 plt.tight_layout()
 save_fig("05_bivariate_churn_rates.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 8.2  Plotly: Churn rate by Contract type (interactive bar) â”€
 cr_contract = churn_rate_by("Contract")
@@ -511,7 +511,7 @@ fig_contract = px.bar(
 fig_contract.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
 fig_contract.update_layout(coloraxis_showscale=False)
 fig_contract.write_html(os.path.join(IMAGES_DIR, "05a_churn_by_contract_interactive.html"))
-fig_contract.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/05a_churn_by_contract_interactive.html")
 
 # â”€â”€ 8.3  Box plots: Monthly Charge vs. Customer Status â”€â”€â”€â”€â”€â”€â”€â”€
@@ -535,7 +535,7 @@ for i, col in enumerate(fin_cols):
 
 plt.tight_layout()
 save_fig("07_boxplot_financial_by_status.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 8.4  Violin plot: Tenure by Customer Status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -553,7 +553,7 @@ ax.set_ylabel("Tenure (Months)")
 ax.grid(True, axis="y", alpha=0.3)
 plt.tight_layout()
 save_fig("08_violin_tenure_by_status.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 
 # =============================================================================
@@ -592,7 +592,7 @@ for i, col in enumerate(demo_cols):
 
 plt.tight_layout()
 save_fig("09_demographics_churn_stacked.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 9.2  Age distribution by churn status (Plotly) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 fig_age = px.histogram(
@@ -609,7 +609,7 @@ fig_age = px.histogram(
 )
 fig_age.update_layout(bargap=0.02, legend_title="Status")
 fig_age.write_html(os.path.join(IMAGES_DIR, "09a_age_distribution_interactive.html"))
-fig_age.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/09a_age_distribution_interactive.html")
 
 # â”€â”€ 9.3  State-wise churn rate (Plotly choropleth â€” bar substitute) â”€
@@ -636,7 +636,7 @@ fig_state = px.bar(
 fig_state.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
 fig_state.update_layout(coloraxis_showscale=False, yaxis={"categoryorder": "total ascending"})
 fig_state.write_html(os.path.join(IMAGES_DIR, "09b_state_churn_rate_interactive.html"))
-fig_state.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/09b_state_churn_rate_interactive.html")
 
 
@@ -692,7 +692,7 @@ axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
 save_fig("10_revenue_analysis.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 10.3  Plotly: Revenue lost by Churn Reason (Treemap) â”€â”€â”€â”€â”€â”€
 churn_reason_rev = (
@@ -712,7 +712,7 @@ fig_tree = px.treemap(
 )
 fig_tree.update_traces(textinfo="label+value+percent parent")
 fig_tree.write_html(os.path.join(IMAGES_DIR, "10a_churn_reason_treemap.html"))
-fig_tree.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive treemap saved: images/10a_churn_reason_treemap.html")
 
 # â”€â”€ 10.4  Plotly: Monthly Charge by Contract and Status (Box) â”€
@@ -728,7 +728,7 @@ fig_box = px.box(
     notched=True,
 )
 fig_box.write_html(os.path.join(IMAGES_DIR, "10b_monthly_charge_contract_box.html"))
-fig_box.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive box plot saved: images/10b_monthly_charge_contract_box.html")
 
 
@@ -770,7 +770,7 @@ ax.set_title("Pearson Correlation Matrix â€” Numerical Features", pad=15)
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 save_fig("11_correlation_heatmap.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 11.3  Correlation with Churn_Flag (ranked bar chart) â”€â”€â”€â”€â”€â”€
 churn_corr = corr_matrix["Churn_Flag"].drop("Churn_Flag").sort_values()
@@ -789,7 +789,7 @@ for bar in bars:
 ax.grid(True, axis="x", alpha=0.3)
 plt.tight_layout()
 save_fig("11b_churn_correlation_ranked.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 
 # =============================================================================
@@ -847,7 +847,7 @@ for i, col in enumerate(NUM_COLS):
 
 plt.tight_layout()
 save_fig("12_outlier_boxplots.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 12.3  Plotly: Interactive scatter of outliers in Monthly_Charge â”€
 Q1_mc  = df["Monthly_Charge"].quantile(0.25)
@@ -872,7 +872,7 @@ fig_scatter = px.scatter(
     hover_data=["Customer_ID", "Contract", "Internet_Type"],
 )
 fig_scatter.write_html(os.path.join(IMAGES_DIR, "12a_outlier_scatter_interactive.html"))
-fig_scatter.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive chart saved: images/12a_outlier_scatter_interactive.html")
 
 
@@ -918,7 +918,7 @@ ax.set_xlabel("Tenure Group")
 ax.set_ylabel("Contract Type")
 plt.tight_layout()
 save_fig("13_segment_heatmap_contract_tenure.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 13.3  Plotly bubble chart: Segment Ã— Revenue Ã— Churn â”€â”€â”€â”€â”€â”€
 fig_bubble = px.scatter(
@@ -941,7 +941,7 @@ fig_bubble = px.scatter(
 )
 fig_bubble.update_traces(textposition="top center", textfont_size=9)
 fig_bubble.write_html(os.path.join(IMAGES_DIR, "13a_segment_bubble_interactive.html"))
-fig_bubble.show()
+# [disabled .show() for headless mode]
 print("  âœ… Interactive bubble chart saved: images/13a_segment_bubble_interactive.html")
 
 # â”€â”€ 13.4  Add-on count vs churn rate â€” line plot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -972,7 +972,7 @@ lines2, labels2 = ax2.get_legend_handles_labels()
 ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
 plt.tight_layout()
 save_fig("13b_addon_count_churn_rate.png")
-plt.show()
+# [disabled .show() for headless mode]
 
 # â”€â”€ 13.5  Final high-risk segment table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 print("\nðŸ”´ HIGH-RISK SEGMENTS (Churn Rate > 30%):")

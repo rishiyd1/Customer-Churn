@@ -39,3 +39,5 @@ Thumbs.db
 .env
 config.ini
 secrets.json
+images/**/*.html
+

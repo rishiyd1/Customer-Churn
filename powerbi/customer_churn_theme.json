@@ -1,8 +1,4 @@
-// ============================================================
-//  File     : customer_churn_theme.json
-//  Purpose  : Custom Power BI theme for Customer Churn Dashboard
-//  Apply    : View → Themes → Browse for themes → select this file
-// ============================================================
+
 {
   "name": "Customer Churn Dark Pro",
   "dataColors": [
